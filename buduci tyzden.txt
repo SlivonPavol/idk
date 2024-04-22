@@ -1,0 +1,3 @@
+graf pre výsledky 
+spraviť komunikáciu 
+pripojiť sa na wifi a vylepšiť nejako gui aby to bolo prispôsobené 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Rate Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 { color: #333; animation: slideIn 1s ease-in-out; }
+        p { color: #555; margin: 10px 0; animation: slideIn 1s ease-in-out; }
+        #heartRate, #oxygenSaturation { font-weight: bold; font-size: 36px; color: #e44d26; animation: scaleUp 0.5s ease-in-out; }
+        img { max-width: 100%; height: auto; margin-top: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); animation: fadeIn 1s ease-in-out; }
+        a.data-link { color: #333; font-weight: bold; text-decoration: none; position: absolute; bottom: 10px; right: 10px; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0); } to { transform: scale(1); } }
+    </style>
+</head>
+<body>
+    <h1>Heart Rate Monitor</h1>
+    <p>Heart Rate: <span id="heartRate">Loading...</span> BPM</p>
+    <p>Oxygen Saturation: <span id="oxygenSaturation">Loading...</span>%</p>
+    <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+    <a href="data" class="data-link">View Previous Results</a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('heart_rate', function (data) {
+            var heartRateElement = document.getElementById('heartRate');
+            heartRateElement.innerText = data.value;
+            heartRateElement.style.animation = 'scaleUp 0.5s ease-in-out';
+        });
+
+        socket.on('oxygen_saturation', function (data) {
+            document.getElementById('oxygenSaturation').innerText = data.value;
+        });
+    </script>
+</body>
+</html>
